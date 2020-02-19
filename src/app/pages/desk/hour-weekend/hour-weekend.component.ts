@@ -5,7 +5,7 @@ import { NotificationService } from '@app/services/notification.service';
 import { NotificationIndividual } from '@app/models/NotificationIndividual';
 import { finalize } from 'rxjs/operators';
 import { untilDestroyed } from '@app/core';
-import { BucketVariables } from '@app/models/BucketVariables';
+import { DeskHourVariables } from '@app/models/DeskHourVariables';
 import { IframeService } from '@app/services/iframe.service';
 import { LoadingService } from '@app/services/loading.service';
 
@@ -29,8 +29,7 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
   template: any;
   templateDescription: any;
   templateVariables: any[] = [];
-  bucketTemplate: BucketVariables;
-  defaultBucketTemplate: BucketVariables;
+  deskHourVariables: DeskHourVariables;
 
   constructor(
     private loadingService: LoadingService,
@@ -75,72 +74,13 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
     return variableValues;
   }
 
-  async sendNotification() {
-    this.loadingService.showLoad();
-
-    if (this.template) {
-      await this.getConfigurations(this.template.name);
-    }
-    await this.getDefaultConfigurations();
-
-    const notificationObj: NotificationIndividual = {
-      telephone: this.phoneNumber ? this.phoneNumber.replace(/[^\d]+/g, '') : null,
-      template: this.template ? this.template.name : null,
-      language_code: this.template ? this.template.language : null,
-      master_state: this.defaultBucketTemplate.masterState,
-      flow_id: this.defaultBucketTemplate.flowId,
-      namespace: this.defaultBucketTemplate.namespace,
-      state_id: this.bucketTemplate ? this.bucketTemplate.stateId : null,
-      params: this.variableValues(this.templateVariables),
-      sender_email: this.email,
-      trackOrigin: true
-    };
-    if (this.validationFields(notificationObj)) {
-      this.notificationService
-        .sendIndividualNotification(notificationObj, this.botId, this.accessKey)
-        .pipe(
-          untilDestroyed(this),
-          finalize(() => {
-            this.loadingService.hiddeLoad();
-          })
-        )
-        .subscribe(
-          res => {
-            this.iframeService.showToast({
-              type: 'success',
-              message: 'Notificação enviada com sucesso!'
-            });
-          },
-          error => {
-            this.iframeService.showToast({
-              type: 'danger',
-              message: 'Falha ao enviar notificação!'
-            });
-          }
-        );
-    } else {
-      this.loadingService.hiddeLoad();
-    }
-  }
-
   async getConfigurations(variable: any) {
     await this.configurationService.getBucket(variable).then(
       res => {
-        this.bucketTemplate = res;
+        this.deskHourVariables = res;
       },
       error => {
-        this.bucketTemplate = {};
-      }
-    );
-  }
-
-  async getDefaultConfigurations() {
-    await this.configurationService.getBucket(this.defaultConfig).then(
-      res => {
-        this.defaultBucketTemplate = res;
-      },
-      error => {
-        this.defaultBucketTemplate = {};
+        this.deskHourVariables = {};
       }
     );
   }

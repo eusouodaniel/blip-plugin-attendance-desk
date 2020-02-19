@@ -14,17 +14,17 @@ export class HourConfigurationComponent implements OnInit, OnDestroy {
 
   unsub = new Subject();
 
-  stateId?: string;
-
-  template: any;
-  templateDescription: any;
-  templateVariables: any[] = [];
+  hourStart?: string;
+  hourEnd?: string;
+  configDesk: string;
 
   constructor(
     private iframeService: IframeService,
     private configurationService: ConfigurationService,
     private loadingService: LoadingService
-  ) {}
+  ) {
+    this.configDesk = 'config-attendance'
+  }
 
   ngOnInit() {}
 
@@ -33,24 +33,14 @@ export class HourConfigurationComponent implements OnInit, OnDestroy {
     this.unsub.unsubscribe();
   }
 
-  async selectedTemplateBucket(event: any) {
-    this.templateVariables = [];
-    this.template = this.templates.find(t => t.id == event.value);
-    this.templateDescription = this.template.components.find((td: any) => td.type == 'BODY').text;
-    await this.getConfigurations(this.template.name);
-  }
-
-  variableId(text: any): string {
-    return 'var' + text.replace(/{*}*/g, '');
-  }
-
   async saveConfigurations() {
     this.loadingService.showLoad();
     const resources = {
-      stateId: this.stateId
+      hourStart: this.hourStart,
+      hourEnd: this.hourEnd
     };
     await this.configurationService
-      .storeBucket(this.template.name, resources)
+      .storeBucket(this.configDesk, resources)
       .then(
         res => {
           this.iframeService.showToast({
@@ -76,10 +66,12 @@ export class HourConfigurationComponent implements OnInit, OnDestroy {
       .getBucket(variable)
       .then(
         res => {
-          this.stateId = res.stateId ? res.stateId : null;
+          this.hourStart = res.hourStart ? res.hourStart : null;
+          this.hourEnd = res.hourEnd ? res.hourEnd : null;
         },
         error => {
-          this.stateId = null;
+          this.hourStart = null;
+          this.hourEnd = null;
         }
       )
       .finally(() => {

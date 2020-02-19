@@ -1,0 +1,70 @@
+import { OnInit, OnDestroy, Component } from '@angular/core';
+import { Subject } from 'rxjs';
+import { BlipService } from '@app/services/blip.service';
+import { LoadingService } from '@app/services/loading.service';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-desk',
+  templateUrl: './desk.component.html',
+  styleUrls: ['./desk.component.scss']
+})
+export class DeskComponent implements OnInit, OnDestroy {
+  unsub = new Subject();
+  showConfigurations = false;
+  takeDomain = '@take.net';
+
+  templates: any[];
+  botId: any;
+  accessKey: any;
+
+  constructor(private blipService: BlipService, private loadingService: LoadingService, private router: Router) {}
+
+  ngOnInit() {
+    this.getApplications();
+    this.getAccount();
+  }
+
+  ngOnDestroy() {
+    this.unsub.next();
+    this.unsub.unsubscribe();
+  }
+
+  async getAccount() {
+    this.loadingService.showLoad();
+    await this.blipService
+      .getAccount()
+      .then(
+        res => {
+          const email: string = res.response.email;
+          if (email.indexOf(this.takeDomain) !== -1) {
+            this.showConfigurations = true;
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .finally(() => {
+        this.loadingService.hiddeLoad();
+      });
+  }
+
+  async getApplications() {
+    this.loadingService.showLoad();
+    await this.blipService
+      .getApplication()
+      .then(
+        res => {
+          this.botId = res.response.shortName;
+          this.accessKey = res.response.accessKey;
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .finally(() => {
+        this.loadingService.hiddeLoad();
+      });
+  }
+}

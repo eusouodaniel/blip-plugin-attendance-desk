@@ -1,0 +1,35 @@
+<div class="container mt-3">
+  <div class="title">
+    Configuração de horário de atendimento
+    <div class="sub-title">
+      Utilize esse plugin para configurar os horários de atendimento
+    </div>
+  </div>
+  <div class="mt-3">
+    <mat-card class="card col-md-12" class="alternate-theme">
+      <mat-tab-group>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon mr-2">person</mat-icon>
+            Configurações de horário
+          </ng-template>
+          <app-desk-hour-configuration></app-desk-hour-configuration>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon mr-2">people</mat-icon>
+            Configurações fins de semana
+          </ng-template>
+          <app-desk-hour-weekend></app-desk-hour-weekend>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon mr-2">build</mat-icon>
+            Configurações feriados
+          </ng-template>
+          <app-desk-hour-holiday></app-desk-hour-holiday>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+</div>

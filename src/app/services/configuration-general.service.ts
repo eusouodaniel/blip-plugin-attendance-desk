@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BucketVariables } from '@app/models/DeskHourVariables';
+import { DeskHourVariables } from '@app/models/DeskHourVariables';
 
 const { IframeMessageProxy } = require('iframe-message-proxy');
 
@@ -40,6 +40,6 @@ export class ConfigurationGeneralService {
         }
       }
     });
-    return bucket.response as BucketVariables;
+    return bucket.response as DeskHourVariables;
   }
 }

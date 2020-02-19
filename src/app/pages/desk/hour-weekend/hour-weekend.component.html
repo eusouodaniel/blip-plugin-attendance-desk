@@ -2,16 +2,16 @@
   <div class="row mt-5">
     <mat-form-field class="col-md-6">
       <mat-label for="stateId">Sábados</mat-label>
-      <input id="stateId" type="checkbox" matInput placeholder="Horário que você deseja iniciar o seu atendimento" [(ngModel)]="hourStart" />
+      <input id="stateId" type="checkbox" placeholder="Horário que você deseja iniciar o seu atendimento" [(ngModel)]="hourStart" />
     </mat-form-field>
     <mat-form-field class="col-md-6">
       <mat-label for="stateId">Domingos</mat-label>
-      <input id="stateId" type="checkbox" matInput placeholder="Horário que você deseja encerrar o seu atendimento" [(ngModel)]="hourEnd" />
+      <input id="stateId" type="checkbox" placeholder="Horário que você deseja encerrar o seu atendimento" [(ngModel)]="hourEnd" />
     </mat-form-field>
   </div>
   <div class="d-flex mt-5">
     <button class="bp-btn bp-btn--blip-dark mx-auto" color="primary" (click)="sendNotification()">
-      Enviar <mat-icon class="ml-2">send</mat-icon>
+      Enviar<mat-icon class="ml-2">send</mat-icon>
     </button>
   </div>
 </mat-card-content>

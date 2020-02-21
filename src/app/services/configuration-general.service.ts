@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DeskHourVariables } from '@app/models/DeskHourVariables';
+import { DeskHourConfigurationVariables } from '@app/models/DeskHourConfigurationVariables';
 
 const { IframeMessageProxy } = require('iframe-message-proxy');
 

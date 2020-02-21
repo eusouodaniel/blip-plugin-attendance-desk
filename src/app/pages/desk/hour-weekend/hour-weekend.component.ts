@@ -2,10 +2,9 @@ import { OnInit, OnDestroy, Component, Input, Output, EventEmitter } from '@angu
 import { Subject } from 'rxjs';
 import { ConfigurationService } from '@app/services/configuration.service';
 import { NotificationService } from '@app/services/notification.service';
-import { NotificationIndividual } from '@app/models/NotificationIndividual';
 import { finalize } from 'rxjs/operators';
 import { untilDestroyed } from '@app/core';
-import { DeskHourVariables } from '@app/models/DeskHourVariables';
+import { DeskHourConfigurationVariables } from '@app/models/DeskHourConfigurationVariables';
 import { IframeService } from '@app/services/iframe.service';
 import { LoadingService } from '@app/services/loading.service';
 
@@ -29,7 +28,7 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
   template: any;
   templateDescription: any;
   templateVariables: any[] = [];
-  deskHourVariables: DeskHourVariables;
+  deskHourConfigurationVariables: DeskHourConfigurationVariables;
 
   constructor(
     private loadingService: LoadingService,
@@ -77,10 +76,10 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
   async getConfigurations(variable: any) {
     await this.configurationService.getBucket(variable).then(
       res => {
-        this.deskHourVariables = res;
+        this.deskHourConfigurationVariables = res;
       },
       error => {
-        this.deskHourVariables = {};
+        this.deskHourConfigurationVariables = {};
       }
     );
   }

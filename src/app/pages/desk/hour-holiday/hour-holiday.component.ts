@@ -12,17 +12,18 @@ import { LoadingService } from '@app/services/loading.service';
 export class HourHolidayComponent implements OnInit, OnDestroy {
   unsub = new Subject();
 
-  masterState?: string;
-  flowId?: string;
-  namespace?: string;
-  templateName: string;
+  day?: string;
+  hourStart?: string;
+  hourEnd?: string;
+  dayStatus: boolean;
+  configDesk: string;
 
   constructor(
     private iframeService: IframeService,
     private configurationGeneralService: ConfigurationGeneralService,
     private loadingService: LoadingService
   ) {
-    this.templateName = 'default-config';
+    this.configDesk = 'config-attendance'
   }
 
   ngOnInit() {
@@ -38,12 +39,13 @@ export class HourHolidayComponent implements OnInit, OnDestroy {
     this.loadingService.showLoad();
 
     const resources = {
-      masterState: this.masterState,
-      flowId: this.flowId,
-      namespace: this.namespace
+      day: this.day,
+      hourStart: this.hourStart,
+      hourEnd: this.hourEnd,
+      dayStatus: this.dayStatus
     };
     await this.configurationGeneralService
-      .storeBucket(this.templateName, resources)
+      .storeBucket(this.configDesk, resources)
       .then(
         res => {
           this.iframeService.showToast({
@@ -66,17 +68,19 @@ export class HourHolidayComponent implements OnInit, OnDestroy {
   async getConfigurations() {
     this.loadingService.showLoad();
     const bucket = await this.configurationGeneralService
-      .getBucket(this.templateName)
+      .getBucket(this.configDesk)
       .then(
         res => {
-          this.masterState = res.masterState ? res.masterState : null;
-          this.flowId = res.flowId ? res.flowId : null;
-          this.namespace = res.namespace ? res.namespace : null;
+          this.day = res.day ? res.day : null;
+          this.hourStart = res.hourStart ? res.hourStart : null;
+          this.hourEnd = res.hourEnd ? res.hourEnd : null;
+          this.dayStatus = res.dayStatus ? res.dayStatus : false;
         },
         error => {
-          this.masterState = null;
-          this.flowId = null;
-          this.namespace = null;
+          this.day = null;
+          this.hourStart = null;
+          this.hourEnd = null;
+          this.dayStatus = null;
         }
       )
       .finally(() => {

@@ -41,6 +41,6 @@ export class ConfigurationService {
         }
       }
     });
-    return bucket.response as BucketVariables;
+    return bucket.response as DeskHourConfigurationVariables;
   }
 }

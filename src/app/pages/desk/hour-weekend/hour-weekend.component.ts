@@ -1,7 +1,6 @@
 import { OnInit, OnDestroy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ConfigurationService } from '@app/services/configuration.service';
-import { NotificationService } from '@app/services/notification.service';
 import { finalize } from 'rxjs/operators';
 import { untilDestroyed } from '@app/core';
 import { DeskHourConfigurationVariables } from '@app/models/DeskHourConfigurationVariables';
@@ -33,8 +32,7 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
   constructor(
     private loadingService: LoadingService,
     private iframeService: IframeService,
-    private configurationService: ConfigurationService,
-    private notificationService: NotificationService
+    private configurationService: ConfigurationService
   ) {
     this.defaultConfig = 'default-config';
   }
@@ -84,15 +82,29 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
     );
   }
 
-  validationFields(variable: NotificationIndividual): boolean {
-    if (!variable.telephone) {
+  validationFields(variable: DeskHourConfigurationVariables): boolean {
+    if (!variable.day) {
       this.iframeService.showToast({
         type: 'danger',
         message: 'Você precisa definir o número de telefone!'
       });
       return false;
     }
-    if (!variable.namespace) {
+    if (!variable.dayStatus) {
+      this.iframeService.showToast({
+        type: 'danger',
+        message: 'Você precisa configurar o namespace para fazer os disparos!'
+      });
+      return false;
+    }
+    if (!variable.hourStart) {
+      this.iframeService.showToast({
+        type: 'danger',
+        message: 'Você precisa configurar o namespace para fazer os disparos!'
+      });
+      return false;
+    }
+    if (!variable.hourEnd) {
       this.iframeService.showToast({
         type: 'danger',
         message: 'Você precisa configurar o namespace para fazer os disparos!'

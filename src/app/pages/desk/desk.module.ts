@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeskRoutingModule } from './desk-routing.module';
 import { DeskComponent } from './desk.component';
 import { BlipService } from '@app/services/blip.service';
-import { NotificationService } from '@app/services/notification.service';
 import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { HourConfigurationComponent } from './hour-configuration/hour-configuration.component';
 import { HourWeekendComponent } from './hour-weekend/hour-weekend.component';
@@ -35,6 +34,6 @@ import { ConfigurationGeneralService } from '@app/services/configuration-general
     HourWeekendComponent,
     HourHolidayComponent
   ],
-  providers: [BlipService, NotificationService, ConfigurationGeneralService]
+  providers: [BlipService, ConfigurationGeneralService]
 })
 export class DeskModule {}

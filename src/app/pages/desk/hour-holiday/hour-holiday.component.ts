@@ -1,6 +1,7 @@
 import { OnInit, OnDestroy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ConfigurationGeneralService } from '@app/services/configuration-general.service';
+import { DeskHourVariables } from '@app/models/DeskHourVariables';
 import { IframeService } from '@app/services/iframe.service';
 import { LoadingService } from '@app/services/loading.service';
 
@@ -12,19 +13,22 @@ import { LoadingService } from '@app/services/loading.service';
 export class HourHolidayComponent implements OnInit, OnDestroy {
   unsub = new Subject();
 
-  day?: string;
-  hourStart?: string;
-  hourEnd?: string;
-  dayStatus: boolean;
-  configDesk: string;
+  abertura?: string;
+  abertura_domingo?: string;
+  abertura_feriado?: string;
+  abertura_procon?: string;
+  abertura_sabado?: string;
+  fechamento?: string;
+  fechamento_domingo?: string;
+  fechamento_sabado?: string;
+  feriado_com_atendimento?: string;
+  sem_atendimento?: string;
 
   constructor(
     private iframeService: IframeService,
     private configurationGeneralService: ConfigurationGeneralService,
     private loadingService: LoadingService
-  ) {
-    this.configDesk = 'config-attendance'
-  }
+  ) {}
 
   ngOnInit() {
     this.getConfigurations();
@@ -38,14 +42,8 @@ export class HourHolidayComponent implements OnInit, OnDestroy {
   async saveConfigurations() {
     this.loadingService.showLoad();
 
-    const resources = {
-      day: this.day,
-      hourStart: this.hourStart,
-      hourEnd: this.hourEnd,
-      dayStatus: this.dayStatus
-    };
     await this.configurationGeneralService
-      .storeBucket(this.configDesk, resources)
+      .setResource(this.abertura, this.abertura)
       .then(
         res => {
           this.iframeService.showToast({
@@ -68,24 +66,44 @@ export class HourHolidayComponent implements OnInit, OnDestroy {
   async getConfigurations() {
     this.loadingService.showLoad();
     const bucket = await this.configurationGeneralService
-      .getBucket(this.configDesk)
+      .getResources()
       .then(
         res => {
-          this.day = res.day ? res.day : null;
-          this.hourStart = res.hourStart ? res.hourStart : null;
-          this.hourEnd = res.hourEnd ? res.hourEnd : null;
-          this.dayStatus = res.dayStatus ? res.dayStatus : false;
+          this.abertura = res.abertura ? res.abertura : null;
+          this.abertura_domingo = res.abertura_domingo ? res.abertura_domingo : null;
+          this.abertura_feriado = res.abertura_feriado ? res.abertura_feriado : null;
+          this.abertura_procon = res.abertura_procon ? res.abertura_procon : null;
+          this.abertura_sabado = res.abertura_sabado ? res.abertura_sabado : null;
+          this.fechamento = res.fechamento ? res.fechamento : null;
+          this.fechamento_domingo = res.fechamento_domingo ? res.fechamento_domingo : null;
+          this.sem_atendimento = res.sem_atendimento ? res.sem_atendimento : null;
         },
         error => {
-          this.day = null;
-          this.hourStart = null;
-          this.hourEnd = null;
-          this.dayStatus = null;
+          this.abertura = null;
+          this.abertura_domingo = null;
+          this.abertura_feriado = null;
+          this.abertura_procon = null;
+          this.abertura_sabado = null;
+          this.fechamento = null;
+          this.fechamento_domingo = null;
+          this.sem_atendimento = null;
         }
       )
       .finally(() => {
         this.loadingService.hiddeLoad();
       });
     return bucket;
+  }
+
+  validationFields(variable: DeskHourVariables): boolean {
+    // if (!variable.day) {
+    //   this.iframeService.showToast({
+    //     type: 'danger',
+    //     message: 'Você precisa definir o dia!'
+    //   });
+    //   return false;
+    // }
+
+    return true;
   }
 }

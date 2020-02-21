@@ -2,6 +2,7 @@ import { OnInit, OnDestroy, Component, Input, Output, EventEmitter } from '@angu
 import { Subject } from 'rxjs';
 import { ConfigurationService } from '@app/services/configuration.service';
 import { IframeService } from '@app/services/iframe.service';
+import { DeskHourVariables } from '@app/models/DeskHourVariables';
 import { LoadingService } from '@app/services/loading.service';
 
 @Component({
@@ -10,21 +11,16 @@ import { LoadingService } from '@app/services/loading.service';
   styleUrls: ['./hour-configuration.component.scss']
 })
 export class HourConfigurationComponent implements OnInit, OnDestroy {
-  @Input() templates: any[];
-
   unsub = new Subject();
 
-  hourStart?: string;
-  hourEnd?: string;
-  configDesk: string;
+  abertura?: string;
+  fechamento?: string;
 
   constructor(
     private iframeService: IframeService,
     private configurationService: ConfigurationService,
     private loadingService: LoadingService
-  ) {
-    this.configDesk = 'config-attendance'
-  }
+  ) {}
 
   ngOnInit() {}
 
@@ -35,18 +31,21 @@ export class HourConfigurationComponent implements OnInit, OnDestroy {
 
   async saveConfigurations() {
     this.loadingService.showLoad();
-    const resources = {
-      hourStart: this.hourStart,
-      hourEnd: this.hourEnd
-    };
+    
     await this.configurationService
-      .storeBucket(this.configDesk, resources)
+      .setResource('abertura', this.abertura)
       .then(
-        res => {
-          this.iframeService.showToast({
-            type: 'success',
-            message: 'Dados armazenados com sucesso!'
-          });
+        async res => {
+          await this.configurationService
+        .setResource('fechamento', this.fechamento)
+          .then(
+            res => {
+              this.iframeService.showToast({
+                type: 'success',
+                message: 'Dados armazenados com sucesso!'
+              });
+            }
+          )
         },
         error => {
           this.iframeService.showToast({
@@ -63,20 +62,39 @@ export class HourConfigurationComponent implements OnInit, OnDestroy {
   async getConfigurations(variable: any) {
     this.loadingService.showLoad();
     const bucket = await this.configurationService
-      .getBucket(variable)
+      .getResources()
       .then(
         res => {
-          this.hourStart = res.hourStart ? res.hourStart : null;
-          this.hourEnd = res.hourEnd ? res.hourEnd : null;
+          this.abertura = res.abertura ? res.abertura : null;
+          this.fechamento = res.fechamento ? res.fechamento : null;
         },
         error => {
-          this.hourStart = null;
-          this.hourEnd = null;
+          this.abertura = null;
+          this.fechamento = null;
         }
       )
       .finally(() => {
         this.loadingService.hiddeLoad();
       });
     return bucket;
+  }
+
+  validationFields(variable: DeskHourVariables): boolean {
+    if (!variable.abertura) {
+      this.iframeService.showToast({
+        type: 'danger',
+        message: 'Você precisa definir o horário de início!'
+      });
+      return false;
+    }
+    if (!variable.fechamento) {
+      this.iframeService.showToast({
+        type: 'danger',
+        message: 'Você precisa definir o horário de fim!'
+      });
+      return false;
+    }
+
+    return true;
   }
 }

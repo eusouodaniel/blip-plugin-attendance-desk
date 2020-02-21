@@ -1,21 +1,16 @@
 import { OnInit, OnDestroy, Component, Input, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ConfigurationService } from '@app/services/configuration.service';
-import { finalize } from 'rxjs/operators';
-import { untilDestroyed } from '@app/core';
+import { ConfigurationGeneralService } from '@app/services/configuration-general.service';
 import { DeskHourVariables } from '@app/models/DeskHourVariables';
 import { IframeService } from '@app/services/iframe.service';
 import { LoadingService } from '@app/services/loading.service';
 
 @Component({
-  selector: 'app-desk-hour-weekend',
-  templateUrl: './hour-weekend.component.html',
-  styleUrls: ['./hour-weekend.component.scss']
+  selector: 'app-desk-hour-open-holiday',
+  templateUrl: './hour-open-holiday.component.html',
+  styleUrls: ['./hour-open-holiday.component.scss']
 })
-export class HourWeekendComponent implements OnInit, OnDestroy {
-  @Input() templates: any[];
-  @Input() botId: any;
-  @Input() accessKey: any;
+export class HourOpenHolidayComponent implements OnInit, OnDestroy {
   unsub = new Subject();
 
   abertura?: string;
@@ -29,14 +24,15 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
   feriado_com_atendimento?: string;
   sem_atendimento?: string;
 
-
   constructor(
-    private loadingService: LoadingService,
     private iframeService: IframeService,
-    private configurationService: ConfigurationService
+    private configurationGeneralService: ConfigurationGeneralService,
+    private loadingService: LoadingService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getConfigurations();
+  }
 
   ngOnDestroy() {
     this.unsub.next();
@@ -45,8 +41,8 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
 
   async saveConfigurations() {
     this.loadingService.showLoad();
-    
-    await this.configurationService
+
+    await this.configurationGeneralService
       .setResource(this.abertura, this.abertura)
       .then(
         res => {
@@ -67,9 +63,9 @@ export class HourWeekendComponent implements OnInit, OnDestroy {
       });
   }
 
-  async getConfigurations(variable: any) {
+  async getConfigurations() {
     this.loadingService.showLoad();
-    const bucket = await this.configurationService
+    const bucket = await this.configurationGeneralService
       .getResources()
       .then(
         res => {

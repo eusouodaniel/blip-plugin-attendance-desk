@@ -14,6 +14,7 @@ import { MaterialFileInputModule } from 'ngx-material-file-input';
 import { HourConfigurationComponent } from './hour-configuration/hour-configuration.component';
 import { HourWeekendComponent } from './hour-weekend/hour-weekend.component';
 import { HourHolidayComponent } from './hour-holiday/hour-holiday.component';
+import { HourOpenHolidayComponent } from './hour-open-holiday/hour-open-holiday.component';
 import { ConfigurationGeneralService } from '@app/services/configuration-general.service';
 
 @NgModule({
@@ -32,7 +33,8 @@ import { ConfigurationGeneralService } from '@app/services/configuration-general
     DeskComponent,
     HourConfigurationComponent,
     HourWeekendComponent,
-    HourHolidayComponent
+    HourHolidayComponent,
+    HourOpenHolidayComponent
   ],
   providers: [BlipService, ConfigurationGeneralService]
 })

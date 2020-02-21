@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DeskHourConfigurationVariables } from '@app/models/DeskHourConfigurationVariables';
+import { DeskHourVariables } from '@app/models/DeskHourVariables';
 
 const { IframeMessageProxy } = require('iframe-message-proxy');
 
@@ -12,16 +12,16 @@ export class ConfigurationGeneralService {
     });
   }
 
-  async storeBucket(variable: any, resources: {}) {
+  async setResource(key: any, value: any) {
     const bucket = await IframeMessageProxy.sendMessage({
       action: 'sendCommand',
       content: {
         destination: 'MessagingHubService',
         command: {
           method: 'set',
-          uri: '/buckets/' + variable,
+          uri: '/resources/' + key,
           type: 'application/x-my-type+json',
-          resource: resources
+          resource: value
         }
       }
     });
@@ -29,17 +29,17 @@ export class ConfigurationGeneralService {
     return bucket;
   }
 
-  async getBucket(variable: any) {
+  async getResources() {
     const bucket = await IframeMessageProxy.sendMessage({
       action: 'sendCommand',
       content: {
         destination: 'MessagingHubService',
         command: {
           method: 'get',
-          uri: '/buckets/' + variable
+          uri: '/resources'
         }
       }
     });
-    return bucket.response as DeskHourConfigurationVariables;
+    return bucket.response as DeskHourVariables;
   }
 }

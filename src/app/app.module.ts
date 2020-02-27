@@ -20,6 +20,7 @@ import { IframeService } from './services/iframe.service';
 import { BlipService } from './services/blip.service';
 import { ConfigurationService } from './services/configuration.service';
 import { LoadingService } from './services/loading.service';
+import { MatInputModule } from '@angular/material';
 
 registerLocaleData(localePt);
 
@@ -33,6 +34,7 @@ registerLocaleData(localePt);
     TranslateModule.forRoot(),
     SharedModule,
     ShellModule,
+    MatInputModule,
     AppRoutingModule // must be imported as the last module as it contains the fallback route
   ],
   declarations: [AppComponent],

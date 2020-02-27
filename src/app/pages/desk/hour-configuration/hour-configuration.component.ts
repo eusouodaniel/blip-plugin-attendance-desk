@@ -5,6 +5,7 @@ import { IframeService } from '@app/services/iframe.service';
 import { DeskHourVariables } from '@app/models/DeskHourVariables';
 import { LoadingService } from '@app/services/loading.service';
 
+
 @Component({
   selector: 'app-desk-hour-configuration',
   templateUrl: './hour-configuration.component.html',
